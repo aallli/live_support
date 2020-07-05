@@ -1,0 +1,163 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-07-05 12:20+0430\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: .\chat\models.py:11
+msgid "Ready"
+msgstr "منتظر"
+
+#: .\chat\models.py:12
+msgid "Busy"
+msgstr "مشغول"
+
+#: .\chat\models.py:13
+msgid "Off"
+msgstr "غیرفعال"
+
+#: .\chat\models.py:17
+msgid "Name"
+msgstr "نام"
+
+#: .\chat\models.py:18
+msgid "Sex"
+msgstr "جنسیت"
+
+#: .\chat\models.py:22 .\chat\models.py:34
+msgid "Operator"
+msgstr "اپراتور پشتیبانی"
+
+#: .\chat\models.py:23
+msgid "Operators"
+msgstr "اپراتورهای پشتیبانی"
+
+#: .\chat\models.py:35
+msgid "User"
+msgstr "کاربر"
+
+#: .\chat\models.py:36
+msgid "Request Date"
+msgstr "تاریخ درخواست"
+
+#: .\chat\models.py:37
+#, fuzzy
+#| msgid "Start"
+msgid "Start Date"
+msgstr "تاریخ شروع"
+
+#: .\chat\models.py:38
+msgid "End Date"
+msgstr "تاریخ پایان"
+
+#: .\chat\models.py:39
+msgid "IP"
+msgstr "آی پی"
+
+#: .\chat\models.py:40
+msgid "User Agent"
+msgstr "مرورگر"
+
+#: .\chat\models.py:41
+msgid "Referer"
+msgstr "نشانی درخواست کننده"
+
+#: .\chat\models.py:42
+msgid "Room UUID"
+msgstr "شناسه نشست"
+
+#: .\chat\models.py:45
+#, fuzzy
+#| msgid "Permissions"
+msgid "Session"
+msgstr "نشست"
+
+#: .\chat\models.py:46
+#, fuzzy
+#| msgid "Permissions"
+msgid "Sessions"
+msgstr "نشست ها"
+
+#: .\chat\templates\chat\room.html:2187
+msgid "Help"
+msgstr "کمک"
+
+#: .\chat\templates\chat\room.html:2222
+msgid "Send us a message"
+msgstr "مشکلی دارید؟"
+
+#: .\chat\templates\chat\room.html:2283
+msgid "Type your message"
+msgstr "لطفا بنویسید..."
+
+#: .\chat\templates\chat\room.html:2382
+#, fuzzy
+#| msgid "Chat socket closed unexpectedly. Please refresh the page"
+msgid ""
+"Chat socket closed. If you have trouble in opening chat dialog, refresh the "
+"page"
+msgstr ""
+"ارتباط با سرور چت قطع شده است. چنانچه در باز کردن صفحه چت مشکل دارید، لطفا "
+"صفحه را مجددا بارگذاری کنید."
+
+#: .\chat\templates\chat\room.html:2387
+#, fuzzy
+#| msgid "Operator deleted successfully."
+msgid "Chat session started successfully."
+msgstr "ارتباط با سرور پشتیبانی برقرار شد."
+
+#: .\chat\templates\chat\room.html:2479
+msgid "Turn off sounds"
+msgstr "قطع صدا"
+
+#: .\chat\templates\chat\room.html:2480
+#, fuzzy
+#| msgid "Turn off sounds"
+msgid "Turn on sounds"
+msgstr "فعال کردن صدا"
+
+#: .\chat\views.py:71 .\chat\views.py:81 .\chat\views.py:93
+msgid "Operator not registered."
+msgstr "اپراتور پشتیبانی ثبت نشده است."
+
+#: .\chat\views.py:85
+msgid "Operator deleted successfully."
+msgstr "اپراتور پشتیبانی با موفقیت حذف شد."
+
+#: .\live_support\settings.py:141
+msgid "En"
+msgstr "انگلیسی"
+
+#: .\live_support\settings.py:142
+msgid "Fa"
+msgstr "فارسی"
+
+#: .\templates\admin\index.html:17
+msgid "Support"
+msgstr "پشتیبانی"
+
+#: .\templates\admin\index.html:20
+msgid "Online Support"
+msgstr "پشتیبانی آنلاین"
+
+#: .\templates\admin\index.html:22
+msgid "Start"
+msgstr "شروع"
+
+#: .\templates\admin\index.html:24
+msgid "Stop"
+msgstr "پایان"

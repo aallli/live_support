@@ -1,0 +1,5 @@
+
+.stoplink, .inlinestoplink {
+    padding-left: 16px;
+    background: url('/static/admin/img/icon-no.svg') 0 1px no-repeat;
+}

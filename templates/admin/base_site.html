@@ -1,0 +1,56 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block branding %}
+    {% get_current_language as LANGUAGE_CODE %}
+    {% if user.online_support %}
+        <style>
+            iframe.support {
+                background: transparent;
+                overflow: hidden;
+                position: relative;
+                width: 100%;
+                height: fit-content;
+                margin: 0px;
+                border: none;
+                min-width: inherit;
+                max-width: inherit;
+                min-height: inherit;
+                max-height: inherit;
+                transition: none 0s ease 0s;
+                z-index: 10000001;
+            }
+
+            #chat-application {
+                background: transparent;
+                overflow: hidden;
+                display: block;
+                margin: 0px;
+                padding: 0px;
+                bottom: 24px;
+                transition: none 0s ease 0s;
+                z-index: 2147483647;
+                position: fixed;
+                width: 115px;
+                height: fit-content;
+                max-height: 600px;
+                max-width: 366px;
+                right: 11px;
+                box-sizing: border-box;
+            }
+
+            {#      fa styles#}
+            :lang(fa) * {
+                direction: rtl;
+            }
+
+            :lang(fa) #chat-application {
+                left: 11px;
+                right: auto;
+            }
+        </style>
+        <div id="chat-application">
+            <iframe id="chat-iframe" src="/{{ LANGUAGE_CODE }}/chat/{{ user.pk }}" class="support"></iframe>
+        </div>
+    {% endif %}
+{% endblock %}
