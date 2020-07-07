@@ -1,5 +1,6 @@
-{% load simple_tag %}
-{% load i18n static %}
+{% load simple_tag i18n static %}
+
+{% get_current_language as LANGUAGE_CODE %}
 <style>
     * {
         font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
@@ -88,6 +89,10 @@
         border-image: initial;
     }
 
+    #bottomRef {
+        height: 96%;
+    }
+
     .css-t6opud {
         position: relative;
         right: 0px;
@@ -95,13 +100,13 @@
         height: 600px !important;
         max-height: 100vh !important;
         min-height: 72px !important;
-        width: 115px !important;
+        width: 100%;
         padding: 0px;
         overflow: hidden;
     }
 
     .css-t6opud.open {
-        width: 366px !important;
+        width: 385px !important;
     }
 
     .css-lesr0g {
@@ -530,6 +535,7 @@
         padding: 2px;
         resize: none;
         font-family: inherit;
+        overflow: auto;
     }
 
     .css-1mh4swq {
@@ -2152,8 +2158,8 @@
         direction: rtl;
     }
 
-    :lang(fa) .textarea {
-        padding: 16px 16px 16px 100px !important
+    :lang(fa) .css-21ro2z .textarea {
+        padding: 16px 16px 16px 90px !important
     }
 
     :lang(fa) .css-1mh4swq {
@@ -2188,7 +2194,13 @@
                          class="css-1f7sj7n">
                         <div class="wrapper css-1h63ts5">
                             <div class="css-efd0hu">
-                                <div class="css-1u17yyl">{% trans 'Help' %}</div>
+                                <div class="css-1u17yyl">
+                                    {% if operator %}
+                                        {{ client }}
+                                    {% else %}
+                                        {% trans 'Help' %}
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                         <div class="css-wwrqw4"><span class="MuiBadge-root" data-cy="widgetButtonBadge"><button
@@ -2223,11 +2235,18 @@
                                                 <div class="css-rjh1b6">
                                                     <div class="css-znt884">
                                                         <div class="MuiGrid-root MuiGrid-container MuiGrid-align-content-xs-center">
-                                                            <p class="headlineOffline css-1tiz7eo">{% trans 'Send us a message' %}</p>
+                                                            <p class="headlineOffline css-1tiz7eo">
+                                                                {% if operator %}
+                                                                    {% trans 'Help finder' %}: {{ client }}
+                                                                {% else %}
+                                                                    {% trans 'Send us a message' %}
+                                                                {% endif %}
+                                                            </p>
                                                         </div>
                                                     </div>
                                                     <div class="MuiGrid-root css-1votyue MuiGrid-container MuiGrid-wrap-xs-nowrap MuiGrid-align-items-xs-center">
-                                                        <p class="css-15d8y0s">We are offline</p></div>
+                                                        <p class="css-15d8y0s"
+                                                           id="header_message">{% trans 'Please wait...' %}</p></div>
                                                 </div>
                                             </div>
                                             <div class="css-18mj1xs">
@@ -2339,6 +2358,8 @@
 <script type="text/javascript">
     var chatSocket = null;
     var playSound = true;
+    var username = null;
+
     document.getElementById('widgetButtonWrapper').style.display = 'block';
     document.getElementById('widgetButtonWrapper').onclick = function () {
         document.getElementById('widgetButtonWrapper').style.display = 'none';
@@ -2358,7 +2379,7 @@
                     data: {
                         element: 'chat-application',
                         style: 'width',
-                        value: '366px'
+                        value: '385px'
                     }
                 }, '{{ origin }}');
 
@@ -2373,11 +2394,28 @@
                 + '/'
         );
 
+        username = '{{ user_name }}';
+        {% if operator %}
+            username = '{% trans 'Operator' %} {{ user_name }}';
+            chatSocket.onopen = function (e) {
+                const message = '<b style="color: rgb(53, 152, 220);">{0}</b>: {1}'.format(username, '{% trans 'Hello and welcome' %}');
+                chatSocket.send(JSON.stringify({
+                    'message': {'body': message, 'options': [['header_message', null],]}
+                }))
+            };
+        {% endif %}
+
         chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data);
             with (document.getElementById('bottomRef')) {
-                innerHTML += (data.message + '\n');
+                innerHTML += (data.message.body + '\n');
                 scrollTop = scrollHeight;
+            }
+            if (data.message.options) {
+                for (var i = 0; i < data.message.options.length; i++) {
+                    var item = data.message.options[i];
+                    document.getElementById(item[0]).innerHTML = item[1]
+                }
             }
             if (playSound) document.querySelector('#audio-incoming-message').play();
         };
@@ -2401,7 +2439,7 @@
                     data: {
                         element: 'chat-application',
                         style: 'height',
-                        value: '100%'
+                        value: '75px'
                     }
                 }, '{{ origin }}');
         window.parent.postMessage(
@@ -2410,7 +2448,11 @@
                     data: {
                         element: 'chat-application',
                         style: 'width',
-                        value: '115px'
+                        {% if operator %}
+                            value: '165px',
+                        {% else %}
+                            value: '115px',
+                        {% endif %}
                     }
                 }, '{{ origin }}');
 
@@ -2421,7 +2463,20 @@
             attributes['state'] = "off";
             innerHTML = null;
         }
-        chatSocket.onclose();
+        {% if operator %}
+            var message = '<b style="color: red">{0}</b>'.format('{% trans 'Thank you for connecting us. Chat service is closed.' %}');
+            chatSocket.send(JSON.stringify({
+                'message': {'body': message,}
+            }))
+
+            var message = '<b style="color: red">{0}</b>'.format('{% trans 'Refresh page if you need to reconnect.' %}');
+            chatSocket.send(JSON.stringify({
+                'message': {'body': message,}
+            }))
+
+            chatSocket.onclose();
+            window.location.href = '/{0}/chat/stop/{1}/'.format('{{ LANGUAGE_CODE }}', '{{ room_name }}');
+        {% endif %}
     }
     document.getElementById('action').onclick = function () {
         set_sound_control_tooltip();
@@ -2436,7 +2491,6 @@
             classNameclass = "css-19dubhr";
             style.position = 'absolute';
             style.top = 0;
-            {% get_current_language as LANGUAGE_CODE %}
             {% if LANGUAGE_CODE == 'en' %}
                 style.transform = 'translate3d(-40px, 81px, 0px)';
                 style.right = 0;
@@ -2455,9 +2509,9 @@
         //document.getElementById('tooltip').innerHTML = null;
     }
     document.getElementById('chatInput').focus();
-    document.getElementById('chatInput').onkeyup = function (e) {
+    document.getElementById('chatInput').onkeydown = function (e) {
         if (e.keyCode === 13) {  // enter, return
-            this.value = this.value.substr(0, this.value.length - 1);
+            e.preventDefault();
             document.getElementById('sendIconButton').click();
         }
         with (document.getElementById('sendIconButton').classList) {
@@ -2467,9 +2521,10 @@
     };
     document.getElementById('sendIconButton').onclick = function (e) {
         const messageInputDom = document.querySelector('#chatInput');
-        const message = '<b style="color: rgb(53, 152, 220);">{0}</b>: {1}'.format('{{ username }}', messageInputDom.value);
+        if (!messageInputDom.value) return;
+        const message = '<b style="color: rgb(53, 152, 220);">{0}</b>: {1}'.format(username, messageInputDom.value);
         chatSocket.send(JSON.stringify({
-            'message': message
+            'message': {'body': message,}
         }))
         ;
         messageInputDom.value = '';
@@ -2496,5 +2551,9 @@
             });
         };
     }
+
+    {% if not operator %}
+        document.getElementById('widgetButtonWrapper').click();
+    {% endif %}
 
 </script>

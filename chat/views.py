@@ -1,21 +1,26 @@
 # chat/views.py
 from .serializers import *
-from django.shortcuts import render
-from django.db.transaction import atomic
+from django.utils import timezone
+from django.utils import translation
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from django.http import HttpResponseServerError
+from django.shortcuts import render, redirect
 from django.utils.translation import ugettext_lazy as _
 from live_support.utils import get_ip_address_from_request
-
+from django.http import HttpResponseServerError, HttpResponseBadRequest, HttpResponseNotAllowed, Http404
 
 def index(request):
     return render(request, 'chat/index.html')
 
 
-@atomic
 def room(request):
+    referer = request.GET['referer']
+    user = request.GET['user']
+    return render(request, 'chat/room_tag.html', {'referer': referer, 'user_name': user})
+
+
+def start(request):
     if request.method == 'GET':
         user = request.GET['user']
         ip = request.GET['ip']
@@ -30,16 +35,51 @@ def room(request):
                 session.referer = referer
             else:
                 session = Session.objects.create(user=user, user_agent=user_agent, ip=ip, referer=referer)
-            # serializer = SessionSerializer(session)
-            # serializer.set_room(
-            #     render_to_string('chat/room.html', {'room_name': session.room_uuid.__str__().replace('-', '')},
-            #                      request=request))
             return render(request, 'chat/room.html', {
                 'room_name': session.room_uuid.__str__().replace('-', ''),
-                'origin': referer, 'username': user
+                'origin': referer, 'user_name': user or _('Guest')
             })
+        except Exception as e:
+            print(e)
+            return HttpResponseServerError()
+    else:
+        return HttpResponseBadRequest
+
+
+def start_operator(request):
+    if request.method == 'GET':
+        operator = Operator.objects.get(name=request.GET['u'])
+        if not operator:
+            return HttpResponseNotAllowed
+        try:
+            session = Session.objects.filter(operator=None).first()
+            if session:
+                session.operator = operator
+                session.start_date = timezone.now()
+                session.save()
+                return render(request, 'chat/room.html', {
+                    'room_name': session.room_uuid.__str__().replace('-', ''),
+                    'origin': session.referer, 'username': operator, 'operator': True,
+                    'client': session.user or _('Guest')
+                })
         except:
             return HttpResponseServerError()
+        return render(request, 'chat/room-empty.html')
+    else:
+        return HttpResponseBadRequest
+
+
+def stop(request, room_uuid):
+    if request.method == 'GET':
+        session = Session.objects.get(room_uuid=room_uuid)
+        if session:
+            session.end_date = timezone.now()
+            session.save()
+            return redirect('/%s/chat/start/operator/?u=%s' % (translation.get_language(), session.operator))
+        else:
+            return Http404
+    else:
+        return HttpResponseBadRequest
 
 
 class OperatorViewSets(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin,
@@ -97,13 +137,14 @@ class OperatorViewSets(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.
             'busy': Operator.objects.exclude(status=Status.BUSY).count(),
         })
 
+from rest_framework import authentication
+from rest_framework import permissions
 
 class SessionViewSets(viewsets.ModelViewSet):
     serializer_class = SessionSerializer
     queryset = Session.objects.all()
-
-    def create(self, request, *args, **kwargs):
-        return super(SessionViewSets, self).create(request, *args, **kwargs)
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         request = self.request

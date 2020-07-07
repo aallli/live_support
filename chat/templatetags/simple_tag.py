@@ -13,4 +13,4 @@ def is_online_support_operator(request):
 @register.simple_tag()
 def on_call(request):
     operator = Operator.objects.filter(name=request.user.username).first()
-    return operator.status != 'off'
+    return operator and operator.status != 'off'

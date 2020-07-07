@@ -38,7 +38,7 @@ class Session(models.Model):
     ip = models.CharField(verbose_name=_('IP'), max_length=15, blank=False)
     user_agent = models.CharField(verbose_name=_('User Agent'), max_length=200, blank=False)
     referer = models.CharField(verbose_name=_('Referer'), max_length=200, blank=False)
-    room_uuid = models.UUIDField(verbose_name=_('Room UUID'), blank=False, default=uuid.uuid4())
+    room_uuid = models.UUIDField(verbose_name=_('Room UUID'), blank=False, default=uuid.uuid4(), unique=True)
 
     class Meta:
         verbose_name = _("Session")
@@ -67,3 +67,13 @@ class Session(models.Model):
 
     def end_date_jalali(self):
         return to_jalali_full(self.end_date)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if not self.pk:
+            room_uuid = uuid.uuid4()
+            while Session.objects.filter(room_uuid=room_uuid).count():
+                room_uuid = uuid.uuid4()
+            self.room_uuid = room_uuid
+        super(Session, self).save(force_insert=False, force_update=False, using=None,
+                                  update_fields=None)

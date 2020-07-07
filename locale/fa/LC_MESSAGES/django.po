@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-05 12:20+0430\n"
+"POT-Creation-Date: 2020-07-06 14:48+0430\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,93 +18,109 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: .\chat\models.py:11
+#: .\chat\models.py:10
 msgid "Ready"
 msgstr "منتظر"
 
-#: .\chat\models.py:12
+#: .\chat\models.py:11
 msgid "Busy"
 msgstr "مشغول"
 
-#: .\chat\models.py:13
+#: .\chat\models.py:12
 msgid "Off"
 msgstr "غیرفعال"
 
-#: .\chat\models.py:17
+#: .\chat\models.py:16
 msgid "Name"
 msgstr "نام"
 
-#: .\chat\models.py:18
+#: .\chat\models.py:17
 msgid "Sex"
 msgstr "جنسیت"
 
-#: .\chat\models.py:22 .\chat\models.py:34
+#: .\chat\models.py:21 .\chat\models.py:33 .\chat\templates\chat\room.html:2392
 msgid "Operator"
-msgstr "اپراتور پشتیبانی"
+msgstr "کارشناس پشتیبانی"
 
-#: .\chat\models.py:23
+#: .\chat\models.py:22
 msgid "Operators"
-msgstr "اپراتورهای پشتیبانی"
+msgstr "کارشناسان پشتیبانی"
 
-#: .\chat\models.py:35
+#: .\chat\models.py:34
 msgid "User"
 msgstr "کاربر"
 
-#: .\chat\models.py:36
+#: .\chat\models.py:35
 msgid "Request Date"
 msgstr "تاریخ درخواست"
 
-#: .\chat\models.py:37
+#: .\chat\models.py:36
 #, fuzzy
 #| msgid "Start"
 msgid "Start Date"
 msgstr "تاریخ شروع"
 
-#: .\chat\models.py:38
+#: .\chat\models.py:37
 msgid "End Date"
 msgstr "تاریخ پایان"
 
-#: .\chat\models.py:39
+#: .\chat\models.py:38
 msgid "IP"
 msgstr "آی پی"
 
-#: .\chat\models.py:40
+#: .\chat\models.py:39
 msgid "User Agent"
 msgstr "مرورگر"
 
-#: .\chat\models.py:41
+#: .\chat\models.py:40
 msgid "Referer"
 msgstr "نشانی درخواست کننده"
 
-#: .\chat\models.py:42
+#: .\chat\models.py:41
 msgid "Room UUID"
 msgstr "شناسه نشست"
 
-#: .\chat\models.py:45
+#: .\chat\models.py:44
 #, fuzzy
 #| msgid "Permissions"
 msgid "Session"
 msgstr "نشست"
 
-#: .\chat\models.py:46
+#: .\chat\models.py:45
 #, fuzzy
 #| msgid "Permissions"
 msgid "Sessions"
 msgstr "نشست ها"
 
-#: .\chat\templates\chat\room.html:2187
+#: .\chat\templates\chat\room-empty.html:536
+msgid "No news!"
+msgstr "خبری نیست!"
+
+#: .\chat\templates\chat\room.html:2196
 msgid "Help"
 msgstr "کمک"
 
-#: .\chat\templates\chat\room.html:2222
+#: .\chat\templates\chat\room.html:2233
+msgid "Help finder"
+msgstr "امداد جو"
+
+#: .\chat\templates\chat\room.html:2235
 msgid "Send us a message"
 msgstr "مشکلی دارید؟"
 
-#: .\chat\templates\chat\room.html:2283
+#: .\chat\templates\chat\room.html:2242
+msgid "Please wait..."
+msgstr "لطفا منتظر بمانید..."
+
+#: .\chat\templates\chat\room.html:2299
 msgid "Type your message"
 msgstr "لطفا بنویسید..."
 
-#: .\chat\templates\chat\room.html:2382
+#: .\chat\templates\chat\room.html:2394
+msgid "Hello and welcome"
+msgstr "سلام، خوش آمدید..."
+
+#: .\chat\templates\chat\room.html:2417
 #, fuzzy
 #| msgid "Chat socket closed unexpectedly. Please refresh the page"
 msgid ""
@@ -114,27 +130,39 @@ msgstr ""
 "ارتباط با سرور چت قطع شده است. چنانچه در باز کردن صفحه چت مشکل دارید، لطفا "
 "صفحه را مجددا بارگذاری کنید."
 
-#: .\chat\templates\chat\room.html:2387
+#: .\chat\templates\chat\room.html:2422
 #, fuzzy
 #| msgid "Operator deleted successfully."
 msgid "Chat session started successfully."
 msgstr "ارتباط با سرور پشتیبانی برقرار شد."
 
-#: .\chat\templates\chat\room.html:2479
+#: .\chat\templates\chat\room.html:2456
+msgid "Thank you for connecting us. Chat service is closed."
+msgstr "از تماس شما متشکریم. ارتباط زنده با کارشناس پشتیبانی به پایان رسید."
+
+#: .\chat\templates\chat\room.html:2461
+msgid "Refresh page if you need to reconnect."
+msgstr "چنانچه نیاز به ارتباط مجدد دارید لطفا صفحه بار دوباره بارگذاری کنید."
+
+#: .\chat\templates\chat\room.html:2528
 msgid "Turn off sounds"
 msgstr "قطع صدا"
 
-#: .\chat\templates\chat\room.html:2480
+#: .\chat\templates\chat\room.html:2529
 #, fuzzy
 #| msgid "Turn off sounds"
 msgid "Turn on sounds"
 msgstr "فعال کردن صدا"
 
-#: .\chat\views.py:71 .\chat\views.py:81 .\chat\views.py:93
+#: .\chat\views.py:34 .\chat\views.py:56
+msgid "Guest"
+msgstr "کاربر میهمان"
+
+#: .\chat\views.py:99 .\chat\views.py:109 .\chat\views.py:121
 msgid "Operator not registered."
 msgstr "اپراتور پشتیبانی ثبت نشده است."
 
-#: .\chat\views.py:85
+#: .\chat\views.py:113
 msgid "Operator deleted successfully."
 msgstr "اپراتور پشتیبانی با موفقیت حذف شد."
 
@@ -146,18 +174,18 @@ msgstr "انگلیسی"
 msgid "Fa"
 msgstr "فارسی"
 
-#: .\templates\admin\index.html:17
+#: .\templates\admin\index.html:14
 msgid "Support"
 msgstr "پشتیبانی"
 
-#: .\templates\admin\index.html:20
+#: .\templates\admin\index.html:17
 msgid "Online Support"
 msgstr "پشتیبانی آنلاین"
 
-#: .\templates\admin\index.html:22
-msgid "Start"
-msgstr "شروع"
-
-#: .\templates\admin\index.html:24
+#: .\templates\admin\index.html:19
 msgid "Stop"
 msgstr "پایان"
+
+#: .\templates\admin\index.html:21
+msgid "Start"
+msgstr "شروع"
