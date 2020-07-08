@@ -14,7 +14,7 @@ class Status(models.TextChoices):
 
 class Operator(models.Model):
     name = models.CharField(verbose_name=_('Name'), blank=False, max_length=100)
-    status = models.CharField(verbose_name=_('Sex'), choices=Status.choices, default=Status.OFF, max_length=10,
+    status = models.CharField(verbose_name=_('Status'), choices=Status.choices, default=Status.OFF, max_length=10,
                               null=False)
 
     class Meta:

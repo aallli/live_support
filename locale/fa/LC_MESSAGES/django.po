@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-06 14:48+0430\n"
+"POT-Creation-Date: 2020-07-08 14:11+0430\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,10 +35,10 @@ msgid "Name"
 msgstr "نام"
 
 #: .\chat\models.py:17
-msgid "Sex"
-msgstr "جنسیت"
+msgid "Status"
+msgstr "وضعیت"
 
-#: .\chat\models.py:21 .\chat\models.py:33 .\chat\templates\chat\room.html:2392
+#: .\chat\models.py:21 .\chat\models.py:33 .\chat\templates\chat\room.html:2399
 msgid "Operator"
 msgstr "کارشناس پشتیبانی"
 
@@ -96,31 +96,31 @@ msgstr "نشست ها"
 msgid "No news!"
 msgstr "خبری نیست!"
 
-#: .\chat\templates\chat\room.html:2196
+#: .\chat\templates\chat\room.html:2201 .\chat\templates\chat\room_tag.html:537
 msgid "Help"
 msgstr "کمک"
 
-#: .\chat\templates\chat\room.html:2233
+#: .\chat\templates\chat\room.html:2240
 msgid "Help finder"
 msgstr "امداد جو"
 
-#: .\chat\templates\chat\room.html:2235
+#: .\chat\templates\chat\room.html:2242
 msgid "Send us a message"
 msgstr "مشکلی دارید؟"
 
-#: .\chat\templates\chat\room.html:2242
+#: .\chat\templates\chat\room.html:2249
 msgid "Please wait..."
 msgstr "لطفا منتظر بمانید..."
 
-#: .\chat\templates\chat\room.html:2299
+#: .\chat\templates\chat\room.html:2306
 msgid "Type your message"
 msgstr "لطفا بنویسید..."
 
-#: .\chat\templates\chat\room.html:2394
+#: .\chat\templates\chat\room.html:2401
 msgid "Hello and welcome"
 msgstr "سلام، خوش آمدید..."
 
-#: .\chat\templates\chat\room.html:2417
+#: .\chat\templates\chat\room.html:2424
 #, fuzzy
 #| msgid "Chat socket closed unexpectedly. Please refresh the page"
 msgid ""
@@ -130,47 +130,47 @@ msgstr ""
 "ارتباط با سرور چت قطع شده است. چنانچه در باز کردن صفحه چت مشکل دارید، لطفا "
 "صفحه را مجددا بارگذاری کنید."
 
-#: .\chat\templates\chat\room.html:2422
+#: .\chat\templates\chat\room.html:2429
 #, fuzzy
 #| msgid "Operator deleted successfully."
 msgid "Chat session started successfully."
 msgstr "ارتباط با سرور پشتیبانی برقرار شد."
 
-#: .\chat\templates\chat\room.html:2456
+#: .\chat\templates\chat\room.html:2467
 msgid "Thank you for connecting us. Chat service is closed."
 msgstr "از تماس شما متشکریم. ارتباط زنده با کارشناس پشتیبانی به پایان رسید."
 
-#: .\chat\templates\chat\room.html:2461
+#: .\chat\templates\chat\room.html:2472
 msgid "Refresh page if you need to reconnect."
 msgstr "چنانچه نیاز به ارتباط مجدد دارید لطفا صفحه بار دوباره بارگذاری کنید."
 
-#: .\chat\templates\chat\room.html:2528
+#: .\chat\templates\chat\room.html:2538
 msgid "Turn off sounds"
 msgstr "قطع صدا"
 
-#: .\chat\templates\chat\room.html:2529
+#: .\chat\templates\chat\room.html:2539
 #, fuzzy
 #| msgid "Turn off sounds"
 msgid "Turn on sounds"
 msgstr "فعال کردن صدا"
 
-#: .\chat\views.py:34 .\chat\views.py:56
+#: .\chat\views.py:40 .\chat\views.py:63
 msgid "Guest"
 msgstr "کاربر میهمان"
 
-#: .\chat\views.py:99 .\chat\views.py:109 .\chat\views.py:121
+#: .\chat\views.py:106 .\chat\views.py:116 .\chat\views.py:128
 msgid "Operator not registered."
 msgstr "اپراتور پشتیبانی ثبت نشده است."
 
-#: .\chat\views.py:113
+#: .\chat\views.py:120
 msgid "Operator deleted successfully."
 msgstr "اپراتور پشتیبانی با موفقیت حذف شد."
 
-#: .\live_support\settings.py:141
+#: .\live_support\settings.py:144
 msgid "En"
 msgstr "انگلیسی"
 
-#: .\live_support\settings.py:142
+#: .\live_support\settings.py:145
 msgid "Fa"
 msgstr "فارسی"
 

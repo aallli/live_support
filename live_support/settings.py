@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from django.utils.translation import ugettext_lazy as _
 
-VERSION = '0.2.3'
+VERSION = '0.2.5'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -173,12 +173,10 @@ JALALI_DATE_DEFAULTS = {
     },
 }
 
-ONLINE_SUPPORT_ADMINS = []
-
 # CORS
 CORS_ORIGIN_ALLOW_ALL = False
 
-CORS_ORIGIN_WHITELIST = os.environ.get("CORS_ORIGIN_WHITELIST", default=('http://localhost:8000',)).split(" ")
+CORS_ORIGIN_WHITELIST = os.environ.get("CORS_ORIGIN_WHITELIST", default='http://localhost:8000').split(" ")
 
 CORS_ALLOW_METHODS = (
     'GET',
