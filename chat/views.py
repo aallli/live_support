@@ -1,7 +1,10 @@
 # chat/views.py
 from .serializers import *
 from django.utils import timezone
+from live_support import settings
 from django.utils import translation
+from rest_framework import permissions
+from rest_framework import authentication
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -9,6 +12,7 @@ from django.shortcuts import render, redirect
 from django.utils.translation import ugettext_lazy as _
 from live_support.utils import get_ip_address_from_request
 from django.http import HttpResponseServerError, HttpResponseBadRequest, HttpResponseNotAllowed, Http404
+
 
 def index(request):
     return render(request, 'chat/index.html')
@@ -37,7 +41,8 @@ def start(request):
                 session = Session.objects.create(user=user, user_agent=user_agent, ip=ip, referer=referer)
             return render(request, 'chat/room.html', {
                 'room_name': session.room_uuid.__str__().replace('-', ''),
-                'origin': referer, 'user_name': user or _('Guest')
+                'origin': referer, 'user_name': user or _('Guest'),
+                'daphne_host': settings.DAPHNE_HOST
             })
         except Exception as e:
             print(e)
@@ -60,7 +65,8 @@ def start_operator(request):
                 return render(request, 'chat/room.html', {
                     'room_name': session.room_uuid.__str__().replace('-', ''),
                     'origin': session.referer, 'username': operator, 'operator': True,
-                    'client': session.user or _('Guest')
+                    'client': session.user or _('Guest'),
+                    'daphne_host': settings.DAPHNE_HOST
                 })
         except:
             return HttpResponseServerError()
@@ -137,8 +143,6 @@ class OperatorViewSets(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.
             'busy': Operator.objects.exclude(status=Status.BUSY).count(),
         })
 
-from rest_framework import authentication
-from rest_framework import permissions
 
 class SessionViewSets(viewsets.ModelViewSet):
     serializer_class = SessionSerializer

@@ -13,7 +13,13 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from django.utils.translation import ugettext_lazy as _
 
-VERSION = '0.2.6'
+VERSION = '0.2.17'
+
+# Check to Daphne directory (Create if not exists)
+DAPHNE_HOST =  os.environ.get("DAPHNE_HOST", default="localhost:8080")
+DAPHNE_DIRECTORY = '/run/daphne'
+if not os.path.exists(DAPHNE_DIRECTORY):
+    os.mkdir(DAPHNE_DIRECTORY)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -64,7 +70,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'live_support.urls'
-SESSION_COOKIE_NAME='ali'
 
 TEMPLATES = [
     {
@@ -90,6 +95,7 @@ X_FRAME_OPTIONS = 'ALLOWALL'
 WSGI_APPLICATION = 'live_support.wsgi.application'
 
 ASGI_APPLICATION = "live_support.routing.application"
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
@@ -191,3 +197,8 @@ CORS_ALLOW_HEADERS = (
     'Referer',
     'Content-Type',
 )
+
+# admin info
+ADMIN_TEL = os.environ.get('ADMIN_TEL', default='+98 21 2915 5120')
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', default='qbesharat@irib.ir')
+

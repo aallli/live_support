@@ -2387,11 +2387,7 @@
             add('open');
         }
         chatSocket = new WebSocket(
-                'ws://'
-                + window.location.host
-                + '/ws/chat/'
-                + '{{ room_name }}'
-                + '/'
+                'ws://{{ daphne_host }}/ws/chat/{{ room_name }}/'
         );
 
         username = '{{ user_name }}';
