@@ -139,8 +139,8 @@ class OperatorViewSets(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.
     def status(self, request, pk=None):
         return Response({
             'status': Operator.objects.exclude(status=Status.OFF).count() != 0,
-            'ready': Operator.objects.exclude(status=Status.READY).count(),
-            'busy': Operator.objects.exclude(status=Status.BUSY).count(),
+            'ready': Operator.objects.filter(status=Status.READY).count(),
+            'busy': Operator.objects.filter(status=Status.BUSY).count(),
         })
 
 
