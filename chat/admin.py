@@ -1,6 +1,16 @@
 from django.contrib import admin
-from .models import Operator, Session
+from .models import System, Operator, Session
 from jalali_date.admin import ModelAdminJalaliMixin
+
+
+@admin.register(System)
+class SystemAdmin(admin.ModelAdmin):
+    model = System
+    save_on_top = True
+    list_display = ['name', 'user', 'key', 'active']
+    list_display_links = ['name', 'user', 'key', 'active']
+    filter = ['name', ]
+    readonly_fields = ('user', 'key',)
 
 
 @admin.register(Operator)
@@ -22,5 +32,3 @@ class SessionAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
     readonly_fields = ('user', 'request_date', 'start_date', 'end_date', 'ip', 'user_agent',
                        'referer', 'room_uuid')
     save_on_top = True
-
-

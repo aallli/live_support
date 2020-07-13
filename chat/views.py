@@ -11,7 +11,6 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext_lazy as _
-from live_support.utils import get_ip_address_from_request
 from django.http import HttpResponseServerError, HttpResponseBadRequest, HttpResponseNotAllowed, Http404
 
 
@@ -100,6 +99,8 @@ class OperatorViewSets(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.
                        viewsets.GenericViewSet):
     serializer_class = OperatorSerializer
     queryset = Operator.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         queryset = Operator.objects.all()
@@ -152,17 +153,8 @@ class OperatorViewSets(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.
         })
 
 
-class SessionViewSets(viewsets.ModelViewSet):
+class SessionViewSets(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = SessionSerializer
     queryset = Session.objects.all()
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
-
-    def perform_create(self, serializer):
-        request = self.request
-        existing_session = Session.objects.filter(user=request.data['user']).filter(operator=None)
-        if existing_session:
-            existing_session.update(**request.data)
-            return SessionSerializer(existing_session)
-        serializer.save(ip=get_ip_address_from_request(request))
-        return super(SessionViewSets, self).perform_create(serializer)

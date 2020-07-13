@@ -2,14 +2,39 @@ import uuid
 from django.db import models
 from django.utils import timezone
 from live_support.utils import to_jalali_full
-from django.contrib.auth.models import AbstractUser
+from rest_framework.authtoken.models import Token
 from django.utils.translation import ugettext_lazy as _
-
+from django.contrib.auth.models import AbstractUser, User
 
 class Status(models.TextChoices):
     READY = 'ready', _('Ready')
     BUSY = 'busy', _('Busy')
     OFF = 'off', _('Off')
+
+
+class System(Token):
+    name = models.CharField(verbose_name=_('Name'), blank=False, max_length=500)
+    active = models.BooleanField(verbose_name=_('Active'), default=True)
+
+    class Meta:
+        verbose_name = _("System")
+        verbose_name_plural = _("Systems")
+        ordering = ['name', ]
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.user = User.objects.create(username='SYSTEM-%s' % self.name)
+        super(System, self).save(*args, **kwargs)
+
+    def delete(self, using=None, keep_parents=False):
+        User.objects.get(username='SYSTEM-%s' % self.name).delete()
+        super(System, self).delete(using=None, keep_parents=False)
 
 
 class Operator(models.Model):

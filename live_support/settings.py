@@ -13,10 +13,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from django.utils.translation import ugettext_lazy as _
 
-VERSION = '0.2.21'
+VERSION = '0.3.0'
 
 # Check to Daphne directory (Create if not exists)
-DAPHNE_HOST =  os.environ.get("DAPHNE_HOST", default="localhost:8080")
+DAPHNE_HOST =  os.environ.get("DAPHNE_HOST", default="localhost:8888")
 DAPHNE_DIRECTORY = '/run/daphne'
 if not os.path.exists(DAPHNE_DIRECTORY):
     os.mkdir(DAPHNE_DIRECTORY)
@@ -200,5 +200,5 @@ CORS_ALLOW_HEADERS = (
 
 # admin info
 ADMIN_TEL = os.environ.get('ADMIN_TEL', default='+98 21 2915 5120')
-ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', default='qbesharat@irib.ir')
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', default='live_support@irib.ir')
 
