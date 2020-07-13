@@ -4,6 +4,7 @@ from django.utils import timezone
 from live_support import settings
 from django.utils import translation
 from rest_framework import permissions
+from django.db.transaction import atomic
 from rest_framework import authentication
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
@@ -50,7 +51,7 @@ def start(request):
     else:
         return HttpResponseBadRequest
 
-
+@atomic
 def start_operator(request):
     if request.method == 'GET':
         operator = Operator.objects.get(name=request.GET['u'])
@@ -62,6 +63,8 @@ def start_operator(request):
                 session.operator = operator
                 session.start_date = timezone.now()
                 session.save()
+                operator.status = Status.BUSY
+                operator.save()
                 return render(request, 'chat/room.html', {
                     'room_name': session.room_uuid.__str__().replace('-', ''),
                     'origin': session.referer, 'username': operator, 'operator': True,
@@ -74,12 +77,14 @@ def start_operator(request):
     else:
         return HttpResponseBadRequest
 
-
+@atomic()
 def stop(request, room_uuid):
     if request.method == 'GET':
         session = Session.objects.get(room_uuid=room_uuid)
         if session:
             session.end_date = timezone.now()
+            session.operator.status = Status.READY
+            session.operator.save()
             session.save()
             return redirect('/%s/chat/start/operator/?u=%s' % (translation.get_language(), session.operator))
         else:
