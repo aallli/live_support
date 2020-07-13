@@ -2245,8 +2245,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="MuiGrid-root css-1votyue MuiGrid-container MuiGrid-wrap-xs-nowrap MuiGrid-align-items-xs-center">
-                                                        <p class="css-15d8y0s"
-                                                           id="header_message">{% trans 'Please wait...' %}</p></div>
+                                                        <p class="css-15d8y0s" id="header_message">
+                                                            {% if ready %}
+                                                                {% trans 'Please wait...' %}
+                                                            {% else %}
+                                                                {% trans 'All Busy! Please wait...' %}
+                                                            {% endif %}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="css-18mj1xs">

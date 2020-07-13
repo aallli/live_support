@@ -43,6 +43,7 @@ def start(request):
             return render(request, 'chat/room.html', {
                 'room_name': session.room_uuid.__str__().replace('-', ''),
                 'origin': referer, 'user_name': user or _('Guest'),
+                'ready': Operator.objects.filter(status=Status.READY).count() != 0,
                 'daphne_host': settings.DAPHNE_HOST
             })
         except Exception as e:
@@ -50,6 +51,7 @@ def start(request):
             return HttpResponseServerError()
     else:
         return HttpResponseBadRequest
+
 
 @atomic
 def start_operator(request):
@@ -76,6 +78,7 @@ def start_operator(request):
         return render(request, 'chat/room-empty.html')
     else:
         return HttpResponseBadRequest
+
 
 @atomic()
 def stop(request, room_uuid):
