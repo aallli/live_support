@@ -39,6 +39,7 @@ class System(Token):
 
 class Operator(models.Model):
     name = models.CharField(verbose_name=_('Name'), blank=False, max_length=100)
+    system = models.ForeignKey(System, verbose_name=_('System'), on_delete=models.SET_NULL, null=True)
     status = models.CharField(verbose_name=_('Status'), choices=Status.choices, default=Status.OFF, max_length=10,
                               null=False)
 

@@ -12,7 +12,8 @@ router.register('session', SessionViewSets, basename='session')
 
 urlpatterns = [
     path('api/operator/status/', OperatorViewSets.as_view({'get': 'status'})),
-    path('api/operator/<name>/', OperatorViewSets.as_view({'get': 'get_by_username', 'delete': 'destroy'})),
+    path('api/operator/<name>/',
+         OperatorViewSets.as_view({'get': 'get_by_username', 'patch': 'patch', 'delete': 'destroy'})),
     path('api/', include(router.urls)),
 ]
 

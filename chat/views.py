@@ -9,9 +9,17 @@ from rest_framework import authentication
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from django.shortcuts import render, redirect
 from django.utils.translation import ugettext_lazy as _
-from django.http import HttpResponseServerError, HttpResponseBadRequest, HttpResponseNotAllowed, Http404
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseServerError, HttpResponseBadRequest
+
+
+def get_full_name(request, name):
+    if 'token' in request.GET:
+        system = get_object_or_404(System, key=request.GET['token'])
+    else:
+        system = get_object_or_404(System, user=request.user)
+    return '%s-%s' % (system, name)
 
 
 def index(request):
@@ -53,11 +61,10 @@ def start(request):
 
 
 @atomic
-def start_operator(request):
+def start_operator(request, name):
     if request.method == 'GET':
-        operator = Operator.objects.get(name=request.GET['u'])
-        if not operator:
-            return HttpResponseNotAllowed
+        name = get_full_name(request, name)
+        operator = get_object_or_404(Operator, name=name)
         try:
             session = Session.objects.filter(operator=None).first()
             if session:
@@ -82,15 +89,15 @@ def start_operator(request):
 @atomic()
 def stop(request, room_uuid):
     if request.method == 'GET':
-        session = Session.objects.get(room_uuid=room_uuid)
-        if session:
-            session.end_date = timezone.now()
-            session.operator.status = Status.READY
-            session.operator.save()
-            session.save()
-            return redirect('/%s/chat/start/operator/?u=%s' % (translation.get_language(), session.operator))
-        else:
-            return Http404
+        session = get_object_or_404(Session, room_uuid=room_uuid)
+        session.end_date = timezone.now()
+        session.operator.status = Status.READY
+        session.operator.save()
+        session.save()
+        return redirect('/%s/chat/start/operator/%s/?token=%s' % (
+            translation.get_language(),
+            session.operator.name.replace('%s-' % session.operator.system.name, ''),
+            session.operator.system.key))
     else:
         return HttpResponseBadRequest
 
@@ -108,25 +115,32 @@ class OperatorViewSets(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.
             queryset = queryset.filter(status=self.request.data['status'])
         return queryset
 
+    @atomic()
     def create(self, request, *args, **kwargs):
-        operator = Operator.objects.filter(name=request.data['name']).first()
+        name = request.data['name']
+        name = get_full_name(request, name)
+        operator = Operator.objects.filter(name=name).first()
         if operator:
             return Response(data=OperatorSerializer(operator).data, status=200)
         else:
-            return super(OperatorViewSets, self).create(request, *args, **kwargs)
+            op = Operator.objects.create(name=name)
+            op.system = get_object_or_404(System, user=request.user)
+            op.save()
+            op_serializer = OperatorSerializer(op)
+            return Response(op_serializer.data, status=201)
 
-    def patch(self, request, *args, **kwargs):
-        operator = Operator.objects.get(name=request.data['name'])
-        if not operator:
-            return Response(data=_('Operator not registered.'), status=404)
-        operator.status = request.data['status']
+    def patch(self, request, name, *args, **kwargs):
+        name = get_full_name(request, name)
+        operator = get_object_or_404(Operator, name=name)
+        operator.status = Status(request.data['status'])
         operator.save()
         operator_serializer = OperatorSerializer(operator)
         return Response(data=operator_serializer.data, status=200)
 
-    def destroy(self, request, *args, **kwargs):
+    def destroy(self, request, name, *args, **kwargs):
         try:
-            operator = Operator.objects.filter(name=request.data['name'])
+            name = get_full_name(request, name)
+            operator = Operator.objects.filter(name=name)
         except:
             return Response(data=_('Operator not registered.'), status=404)
 
@@ -138,6 +152,7 @@ class OperatorViewSets(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.
 
     @action(detail=True, methods=['get'])
     def get_by_username(self, request, name=None):
+        name = get_full_name(request, name)
         operator = Operator.objects.filter(name=name).first()
         if not operator:
             return Response(data=_('Operator not registered.'), status=404)

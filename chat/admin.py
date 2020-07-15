@@ -17,9 +17,9 @@ class SystemAdmin(admin.ModelAdmin):
 class OperatorAdmin(admin.ModelAdmin):
     model = Operator
     save_on_top = True
-    list_display = ['name', 'status']
-    list_display_links = ['name', 'status']
-    filter = ['status']
+    list_display = ['name', 'system', 'status']
+    list_display_links = ['name', 'system', 'status']
+    filter = ['system', 'status']
 
 
 @admin.register(Session)
