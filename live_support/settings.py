@@ -13,13 +13,16 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from django.utils.translation import ugettext_lazy as _
 
-VERSION = '0.3.0'
+VERSION = '0.3.1'
 
 # Check to Daphne directory (Create if not exists)
 DAPHNE_HOST =  os.environ.get("DAPHNE_HOST", default="localhost:8888")
 DAPHNE_DIRECTORY = '/run/daphne'
 if not os.path.exists(DAPHNE_DIRECTORY):
-    os.mkdir(DAPHNE_DIRECTORY)
+    try:
+        os.mkdir(DAPHNE_DIRECTORY)
+    except:
+        pass
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
