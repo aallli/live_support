@@ -52,7 +52,7 @@ NOTE: Set environment variable for database access:
 
 NOTE: If docker fails due to sanction issues, try this:
 
-    sudo apt-get update
+    sudo apt-get update & sudo apt-get -y upgrade
     sudo apt-get install redis-server
  
 15- To autostart redis, open configurations file:
@@ -84,11 +84,11 @@ to:
     {'type': 'hello'}
 
 19- test if gunicorn can serve application: gunicorn --bind 0.0.0.0:8888 live_support.wsgi
-20- groupadd --system www-data
-21- useradd --system --gid www-data --shell /bin/bash --home-dir /home/[user]/live_support/live_support live_support
-22- usermod -aG sudo live_support
-23- chown -R live_support:www-data /home/[user]/live_support/live_support
-24- chmod -R g+w /home/[user]/live_support/live_support
+20- sudo groupadd --system www-data
+21- sudo useradd --system --gid www-data --shell /bin/bash --home-dir /home/[user]/live_support/live_support live_support
+22- sudo usermod -aG sudo live_support
+23- sudo chown -R live_support:www-data /home/[user]/live_support/live_support
+24- sudo chmod -R g+w /home/[user]/live_support/live_support
 
 Configure Gunicorn:
 25- sudo nano /etc/systemd/system/gunicorn-live_support.service
@@ -114,6 +114,7 @@ Configure Gunicorn:
     DEBUG=0
     DEPLOY=1
     ALLOWED_HOSTS='[server ip]'
+    DATABASES_PASSWORD='[Database password]'
     CHANNEL_LAYERS_HOSTS='[redis server]',
     ADMIN_TEL='[admin tel]'
     ADMIN_EMAIL='[admin email]'
@@ -138,10 +139,10 @@ Configure Gunicorn:
 
 35- Install gettext:
 
-    apt-get update
-    apt-get upgrade
-    apt-get install
-    apt-get install gettext
+    sudo apt-get update
+    sudo apt-get upgrade
+    sudo apt-get install
+    sudo apt-get install gettext
 
 36- Compile messages for i18N:
     
@@ -167,6 +168,7 @@ Configure Gunicorn:
     environment =
         DEBUG=0,
         ALLOWED_HOSTS='[Allowed hosts]',
+        DATABASES_PASSWORD='[Database password]'
         CHANNEL_LAYERS_HOSTS='[Channel layer host]',
         DAPHNE_HOST='[Daphne host]',
         CORS_ORIGIN_WHITELIST='[CORS White list]'
@@ -237,12 +239,12 @@ Configure Nginx:
 49- Add:
     
     upstream channels-backend {
-        server 192.168.115.241:8080;
+        server [server ip]:8080;
     }
     
     server {
         listen       8888;
-        server_name  192.168.115.241;
+        server_name  [server ip];
     
         location = /favicon.ico { access_log off; log_not_found off; }
     
