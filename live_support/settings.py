@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from django.utils.translation import ugettext_lazy as _
 
-VERSION = '0.3.4'
+VERSION = '0.3.5'
 
 # Check to Daphne directory (Create if not exists)
 DAPHNE_HOST =  os.environ.get("DAPHNE_HOST", default="localhost:8888")

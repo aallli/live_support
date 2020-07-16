@@ -26,9 +26,9 @@ class OperatorAdmin(admin.ModelAdmin):
 class SessionAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
     model = Session
     save_on_top = True
-    list_display = ['room_uuid', 'user', 'operator', 'request_date_jalali']
-    list_display_links = ['room_uuid', 'operator', 'user', 'request_date_jalali']
-    filter = ['operator', 'user', 'request_date', 'start_date', 'end_date']
-    readonly_fields = ('user', 'request_date', 'start_date', 'end_date', 'ip', 'user_agent',
+    list_display = ['room_uuid', 'user', 'operator', 'system', 'request_date_jalali']
+    list_display_links = ['room_uuid', 'user', 'operator', 'system', 'request_date_jalali']
+    filter = ['system', 'operator', 'user', 'request_date', 'start_date', 'end_date']
+    readonly_fields = ('system', 'user', 'request_date', 'start_date', 'end_date', 'ip', 'user_agent',
                        'referer', 'room_uuid')
     save_on_top = True

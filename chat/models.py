@@ -47,6 +47,7 @@ class Operator(models.Model):
         verbose_name = _("Operator")
         verbose_name_plural = _("Operators")
         ordering = ['name', ]
+        unique_together = ['name', 'system']
 
     def __str__(self):
         return self.name
@@ -57,6 +58,7 @@ class Operator(models.Model):
 
 class Session(models.Model):
     operator = models.ForeignKey(Operator, verbose_name=_('Operator'), on_delete=models.SET_NULL, null=True)
+    system = models.ForeignKey(System, verbose_name=_('System'), on_delete=models.SET_NULL, null=True)
     user = models.CharField(verbose_name=_('User'), max_length=200, null=True)
     request_date = models.DateTimeField(verbose_name=_('Request Date'), null=True, blank=True, default=timezone.now())
     start_date = models.DateTimeField(verbose_name=_('Start Date'), null=True, blank=True)

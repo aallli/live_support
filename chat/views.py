@@ -14,12 +14,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseServerError, HttpResponseBadRequest
 
 
-def get_full_name(request, name):
+def get_system(request):
     if 'token' in request.GET:
-        system = get_object_or_404(System, key=request.GET['token'])
+        return get_object_or_404(System, key=request.GET['token'], active=True)
     else:
-        system = get_object_or_404(System, user=request.user)
-    return '%s-%s' % (system, name)
+        return get_object_or_404(System, user=request.user, active=True)
 
 
 def index(request):
@@ -29,24 +28,26 @@ def index(request):
 def room(request):
     referer = request.GET['referer']
     user = request.GET['user']
-    return render(request, 'chat/room_tag.html', {'referer': referer, 'user_name': user})
+    token = request.GET['token']
+    return render(request, 'chat/room_tag.html', {'referer': referer, 'user_name': user, 'token': token})
 
 
 def start(request):
     if request.method == 'GET':
         user = request.GET['user']
+        system = get_system(request)
         ip = request.GET['ip']
         user_agent = request.GET['user_agent']
         referer = request.GET['referer']
         try:
-            session = Session.objects.filter(user=user).filter(operator=None).first()
+            session = Session.objects.filter(system=system).filter(user=user).filter(operator=None).first()
             if session:
                 session.user = user
                 session.ip = ip
                 session.user_agent = user_agent
                 session.referer = referer
             else:
-                session = Session.objects.create(user=user, user_agent=user_agent, ip=ip, referer=referer)
+                session = Session.objects.create(user=user, system=system, user_agent=user_agent, ip=ip, referer=referer)
             return render(request, 'chat/room.html', {
                 'room_name': session.room_uuid.__str__().replace('-', ''),
                 'origin': referer, 'user_name': user or _('Guest'),
@@ -63,10 +64,10 @@ def start(request):
 @atomic
 def start_operator(request, name):
     if request.method == 'GET':
-        name = get_full_name(request, name)
-        operator = get_object_or_404(Operator, name=name)
+        system = get_system(request)
+        operator = get_object_or_404(Operator, system=system, name=name)
         try:
-            session = Session.objects.filter(operator=None).first()
+            session = Session.objects.filter(system=system).filter(operator=None).first()
             if session:
                 session.operator = operator
                 session.start_date = timezone.now()
@@ -118,20 +119,20 @@ class OperatorViewSets(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.
     @atomic()
     def create(self, request, *args, **kwargs):
         name = request.data['name']
-        name = get_full_name(request, name)
-        operator = Operator.objects.filter(name=name).first()
+        system = get_system(request)
+        operator = Operator.objects.filter(system=system).filter(name=name).first()
         if operator:
             return Response(data=OperatorSerializer(operator).data, status=200)
         else:
             op = Operator.objects.create(name=name)
-            op.system = get_object_or_404(System, user=request.user)
+            op.system = system
             op.save()
             op_serializer = OperatorSerializer(op)
             return Response(op_serializer.data, status=201)
 
     def patch(self, request, name, *args, **kwargs):
-        name = get_full_name(request, name)
-        operator = get_object_or_404(Operator, name=name)
+        system = get_system(request)
+        operator = get_object_or_404(Operator, system=system, name=name)
         operator.status = Status(request.data['status'])
         operator.save()
         operator_serializer = OperatorSerializer(operator)
@@ -139,8 +140,8 @@ class OperatorViewSets(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.
 
     def destroy(self, request, name, *args, **kwargs):
         try:
-            name = get_full_name(request, name)
-            operator = Operator.objects.filter(name=name)
+            system = get_system(request)
+            operator = Operator.objects.filter(system=system).filter(name=name)
         except:
             return Response(data=_('Operator not registered.'), status=404)
 
@@ -152,8 +153,8 @@ class OperatorViewSets(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.
 
     @action(detail=True, methods=['get'])
     def get_by_username(self, request, name=None):
-        name = get_full_name(request, name)
-        operator = Operator.objects.filter(name=name).first()
+        system = get_system(request)
+        operator = Operator.objects.filter(system=system).filter(name=name).first()
         if not operator:
             return Response(data=_('Operator not registered.'), status=404)
         operator_serializer = OperatorSerializer(operator)
@@ -161,10 +162,11 @@ class OperatorViewSets(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.
 
     @action(detail=True, methods=['get'])
     def status(self, request, pk=None):
+        system = get_system(request)
         return Response({
-            'status': Operator.objects.exclude(status=Status.OFF).count() != 0,
-            'ready': Operator.objects.filter(status=Status.READY).count(),
-            'busy': Operator.objects.filter(status=Status.BUSY).count(),
+            'status': Operator.objects.filter(system=system).exclude(status=Status.OFF).count() != 0,
+            'ready': Operator.objects.filter(system=system).filter(status=Status.READY).count(),
+            'busy': Operator.objects.filter(system=system).filter(status=Status.BUSY).count(),
         })
 
 

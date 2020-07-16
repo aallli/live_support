@@ -569,7 +569,8 @@
         }
         document.getElementById('widgetButtonWrapper').style.display = 'block';
         document.getElementById('widgetButtonWrapper').onclick = function () {
-            var querystring = 'user={0}&ip={1}&user_agent={2}&referer={3}'.format('{{ user_name }}', ip, navigator.userAgent, '{{ referer }}');
+            var querystring = 'user={0}&ip={1}&user_agent={2}&referer={3}&token={4}'.format(
+                    '{{ user_name }}', ip, navigator.userAgent, '{{ referer }}', '{{ token }}');
             window.location.href = "/{0}/chat/start?{1}".format('{{ LANGUAGE_CODE }}', querystring);
         }
 
