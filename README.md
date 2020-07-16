@@ -12,8 +12,39 @@ NOTE: Set environment variable for database access:
 
     export ALLOWED_HOSTS='[Server IP]'
 
-8- python manage.py migrate
-9- Install redis:
+8- Install postgresql:
+
+    sudo apt-get install postgresql postgresql-contrib
+    sudo usermod -aG sudo postgres
+
+9- Switch over to the postgres account on your server by typing:
+    
+    sudo -i -u postgres
+
+10- Create database named sadesa: sudo -u postgres createdb
+
+    sudo -u postgres createdb live_support
+
+11- Set postgres password: 
+    
+    sudo -u postgres psql postgres
+    \password postgres
+    \q
+    exit 
+
+12- Caution: Allow remote access to postgres:
+    
+    Add to /etc/postgresql/9.5/main/postgresql.conf : #listen_addresses = '*'
+    Add to /etc/postgresql/9.5/main/pg_hba.conf : host all all 0.0.0.0/0 trust
+    systemctl restart postgresql
+
+NOTE: Set environment variable for database access: 
+
+    export DATABASES_PASSWORD='[Database password]'
+
+12- python manage.py migrate
+
+14- Install redis:
 
     deactivate
     sudo apt-get install docker
@@ -24,11 +55,11 @@ NOTE: If docker fails due to sanction issues, try this:
     sudo apt-get update
     sudo apt-get install redis-server
  
-10- To autostart redis, open configurations file:
+15- To autostart redis, open configurations file:
 
     sudo nano /etc/redis/redis.conf
 
-11- Find and replace this statement:
+16- Find and replace this statement:
 
     supervised no
 
@@ -36,12 +67,12 @@ to:
 
     supervised systemd
 
-12- Start and check redis:
+17- Start and check redis:
 
     sudo systemctl restart redis.service
     sudo systemctl status redis.service
 
-13- Test channel layer can communicate with Redis:
+18- Test channel layer can communicate with Redis:
 
     source ../venv/bin/activate
     python manage.py shell
@@ -52,16 +83,16 @@ to:
     >>> async_to_sync(channel_layer.receive)('test_channel')
     {'type': 'hello'}
 
-14- test if gunicorn can serve application: gunicorn --bind 0.0.0.0:8888 live_support.wsgi
-15- groupadd --system www-data
-16- useradd --system --gid www-data --shell /bin/bash --home-dir /home/[user]/live_support/live_support live_support
-17- usermod -aG sudo live_support
-18- chown -R live_support:www-data /home/[user]/live_support/live_support
-19- chmod -R g+w /home/[user]/live_support/live_support
+19- test if gunicorn can serve application: gunicorn --bind 0.0.0.0:8888 live_support.wsgi
+20- groupadd --system www-data
+21- useradd --system --gid www-data --shell /bin/bash --home-dir /home/[user]/live_support/live_support live_support
+22- usermod -aG sudo live_support
+23- chown -R live_support:www-data /home/[user]/live_support/live_support
+24- chmod -R g+w /home/[user]/live_support/live_support
 
 Configure Gunicorn:
-20- sudo nano /etc/systemd/system/gunicorn-live_support.service
-21- add:
+25- sudo nano /etc/systemd/system/gunicorn-live_support.service
+26- add:
     
     [Unit]
     Description=gunicorn daemon
@@ -77,8 +108,8 @@ Configure Gunicorn:
     [Install]
     WantedBy=multi-user.target
         
-22- sudo nano /etc/gunicorn-live_support.env
-23- Add followings:
+27- sudo nano /etc/gunicorn-live_support.env
+28- Add followings:
     
     DEBUG=0
     DEPLOY=1
@@ -89,48 +120,48 @@ Configure Gunicorn:
     DAPHNE_HOST='[Daphne host]',
     CORS_ORIGIN_WHITELIST='[CORS white list]'
     
-24- sudo systemctl start gunicorn-live_support
-25- sudo systemctl enable gunicorn-live_support
-26- Check if 'live_support.sock' file exists: ls /home/[user]/live_support/live_support
-27- sudo nano /etc/nginx/conf.d/proxy_params
-28- Add followings:
+29- sudo systemctl start gunicorn-live_support
+30- sudo systemctl enable gunicorn-live_support
+31- Check if 'live_support.sock' file exists: ls /home/[user]/live_support/live_support
+32- sudo nano /etc/nginx/conf.d/proxy_params
+33- Add followings:
 
     proxy_set_header Host $http_host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
 
-29- If gunicorn.service file is changed, run:
+34- If gunicorn.service file is changed, run:
 
     sudo systemctl daemon-reload
     sudo systemctl restart gunicorn-live_support
 
-30- Install gettext:
+35- Install gettext:
 
     apt-get update
     apt-get upgrade
     apt-get install
     apt-get install gettext
 
-31- Compile messages for i18N:
+36- Compile messages for i18N:
     
     source ../venv/bin/activate
     django-admin compilemessages -f (if translation is needed)
 
-32- Collect static files: (Create static and uploads directory if needed)
+37- Collect static files: (Create static and uploads directory if needed)
  
     python manage.py collectstatic
       
-33- Install supervisor:
+38- Install supervisor:
 
     sudo apt install supervisor
     
     
-34- Configure supervisor:
+39- Configure supervisor:
 
     sudo nano /etc/supervisor/conf.d/live_support.conf
 
-35- Add these code:
+40- Add these code:
 
     [fcgi-program:asgi]
     environment =
@@ -164,47 +195,46 @@ Configure Gunicorn:
     stdout_logfile=/home/[user]/live_support/log/asgi.log
     redirect_stderr=true
     
-36 - Create the run directory for the sockets referenced:
+41 - Create the run directory for the sockets referenced:
 
     sudo mkdir /run/daphne/
     
-37- Change the owner settings of the run directory:
+42- Change the owner settings of the run directory:
 
     sudo chown -R live_support:www-data /run/daphne/
 
-38- Have supervisor reread and update its jobs:
+43- Have supervisor reread and update its jobs:
 
     sudo supervisorctl reread
     sudo supervisorctl update
 
 
 Configure Nginx:
-39- create keys and keep them in /root/certs/live_support/:
+44- create keys and keep them in /root/certs/live_support/:
     
     openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /root/certs/live_support/live_support.crt -keyout /root/certs/live_support/live_support.key
 
-40- Restrict the key’s permissions so that only root can access it:
+45- Restrict the key’s permissions so that only root can access it:
     
     sudo chmod 400 /root/certs/live_support/live_support.key
 
-41- Install nginx:
+46- Install nginx:
 
     deactivate
     apt update
     apt install nginx
 
-42- Run nginx:
+47- Run nginx:
 
     sudo systemctl daemon-reload
     sudo systemctl start nginx
     sudo systemctl enable nginx
-
-    
-43- Configure nginx:
+  
+48- Configure nginx:
 
     sudo nano /etc/nginx/conf.d/live_support.conf
 
-44- Add:
+49- Add:
     
     upstream channels-backend {
         server 192.168.115.241:8080;
@@ -256,11 +286,11 @@ Configure Nginx:
         }
     }
 
-45- Test your Nginx configuration for syntax errors by typing: 
+50- Test your Nginx configuration for syntax errors by typing: 
 
     sudo /usr/sbin/nginx -t
 
-46- Restart nginx:
+51- Restart nginx:
 
     sudo service nginx reload    
     sudo service nginx status

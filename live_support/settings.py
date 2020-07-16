@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from django.utils.translation import ugettext_lazy as _
 
-VERSION = '0.3.2'
+VERSION = '0.3.3'
 
 # Check to Daphne directory (Create if not exists)
 DAPHNE_HOST =  os.environ.get("DAPHNE_HOST", default="localhost:8888")
@@ -113,9 +113,13 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db',
-    },
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': os.environ.get('DATABASES_HOST', default='127.0.0.1'),
+        'PORT': os.environ.get('DATABASES_PORT', default='5432'),
+        'NAME': os.environ.get('DATABASES_NAME', default='live_support'),
+        'USER': os.environ.get('DATABASES_USER', default='postgres'),
+        'PASSWORD': os.environ.get('DATABASES_PASSWORD', default='123'),
+    }
 }
 
 # Password validation
